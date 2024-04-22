@@ -32,6 +32,10 @@ ORDER BY
     brand_name ASC;
 ```
 
+From a model like this:
+
+![alt text](image.png)
+
 # Running the project with Docker
 
 You'll first need to build and run the services via Docker (as defined in `docker-compose.yml`):
