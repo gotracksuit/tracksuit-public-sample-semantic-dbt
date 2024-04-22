@@ -1,0 +1,28 @@
+cubes:
+  - name: respondent_ethnicity
+    sql_table: public.respondent_ethnicity
+    data_source: default
+
+    joins:
+      - name: respondent
+        sql: "{CUBE}.respondent_id = {respondent}.id"
+        relationship: many_to_one
+
+      - name: ethnicity
+        sql: "{CUBE}.ethnicity_id = {ethnicity}.id"
+        relationship: many_to_one
+
+    dimensions:
+      - name: id
+        sql: id
+        type: number
+        primary_key: true
+
+    measures:
+      - name: count
+        type: count
+
+    pre_aggregations:
+      # Pre-aggregation definitions go here.
+      # Learn more in the documentation: https://cube.dev/docs/caching/pre-aggregations/getting-started
+

@@ -1,0 +1,28 @@
+cubes:
+  - name: respondent_brand
+    sql_table: public.respondent_brand
+    data_source: default
+
+    joins:
+      - name: brand
+        sql: "{CUBE}.brand_id = {brand}.id"
+        relationship: many_to_one
+
+      - name: respondent
+        sql: "{CUBE}.respondent_id = {respondent}.id"
+        relationship: many_to_one
+
+    dimensions:
+      - name: id
+        sql: id
+        type: number
+        primary_key: true
+
+    measures:
+      - name: count
+        type: count
+
+    pre_aggregations:
+      # Pre-aggregation definitions go here.
+      # Learn more in the documentation: https://cube.dev/docs/caching/pre-aggregations/getting-started
+

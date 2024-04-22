@@ -16,12 +16,18 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-  dbt:
-    container_name: dbt
-    build: .
-    image: dbt-sample-semantic
     volumes:
-      - ./:/usr/src/dbt
+      - ./db:/docker-entrypoint-initdb.d
+      - ./data:/var/lib/postgresql/new-data
+  cube:
+    image: cubejs/cube:latest
+    ports:
+      - 4000:4000
+      - 15432:15432
+    environment:
+      - CUBEJS_DEV_MODE=true
+    volumes:
+      - .:/cube/conf
     depends_on:
       postgres:
         condition: service_healthy

@@ -1,0 +1,25 @@
+cubes:
+  - name: respondent
+    sql_table: public.respondent
+    data_source: default
+
+    joins: []
+
+    dimensions:
+      - name: id
+        sql: id
+        type: number
+        primary_key: true
+
+      - name: wave_date
+        sql: wave_date
+        type: time
+
+    measures:
+      - name: weight
+        sql: weight
+        type: sum
+
+    pre_aggregations:
+      # Pre-aggregation definitions go here.
+      # Learn more in the documentation: https://cube.dev/docs/caching/pre-aggregations/getting-started

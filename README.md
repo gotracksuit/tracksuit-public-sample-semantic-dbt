@@ -1,6 +1,36 @@
 # Semantic Layer Modelling Problem
 
-The intention of this repository is to build out a sample set of data that is a small representation of the kind of many-to-many issues that exist in the survey domain. You can run the example using the instructions below, then inspect the example view/model to get an idea of the kind of query that we would like the semantic layer to handle (in a much more elegant way).
+The intention of this repository is to build out a sample set of data that is a small representation of the kind of many-to-many issues that exist in the survey domain. You can run the example using the instructions below.
+
+We want a semantic model which can generate a query like this:
+
+```
+WITH respondents AS (
+    SELECT DISTINCT r.id AS respondent_id, r.weight, b.name AS brand_name
+    FROM public.respondent r
+    LEFT JOIN public.respondent_ethnicity re ON re.respondent_id = r.id
+    LEFT JOIN public.ethnicity e ON e.id = re.ethnicity_id
+    LEFT JOIN public.respondent_brand rb ON rb.respondent_id = r.id
+    LEFT JOIN public.brand b ON b.id = rb.brand_id
+    WHERE
+        e.name IN ('Ethnicity D','Ethnicity C') AND r.wave_date = '2023-08-01'
+),
+respondents_base AS (
+    SELECT DISTINCT respondent_id, weight
+    FROM respondents
+)
+SELECT
+    brand_name,
+    SUM(r.weight) AS sum_weight,
+    (SELECT SUM(weight) FROM respondents_base) AS total_weight,
+    SUM(r.weight) / (SELECT SUM(weight) FROM respondents_base) AS percentage
+FROM
+    respondents r
+GROUP BY
+    brand_name
+ORDER BY
+    brand_name ASC;
+```
 
 # Running the project with Docker
 
@@ -11,69 +41,18 @@ $ docker compose build
 $ docker compose up
 ```
 
-or to run without blocking
+to destroy the db:
 
 ```bash
-$ docker compose up -d
+$ docker compose down
 ```
 
-The commands above will run a Postgres instance and then build the dbt resources of Jaffle Shop as specified in the
-repository. These containers will remain up and running so that you can:
+Connect to the database using your favourite SQL client on:
 
-- Query the Postgres database and the tables created out of dbt models
-- Run further dbt commands via dbt CLI
-
-## Building additional or modified data models
-
-Once the containers are up and running, you can still make any modifications in the existing dbt project
-and re-run any command to serve the purpose of the modifications.
-
-In order to build your data models, you first need to access the container.
-
-To do so, we infer the container id for `dbt` running container:
-
-```bash
-docker ps
 ```
-
-Then enter the running container:
-
-```bash
-docker exec -it <container-id> /bin/bash
-```
-
-And finally:
-
-```bash
-# Install dbt deps (might not required as long as you have no -or empty- `dbt_packages.yml` file)
-dbt deps
-
-# Build seeds
-dbt seeds --profiles-dir profiles
-
-# Build data models
-dbt run --profiles-dir profiles
-
-# Build snapshots
-dbt snapshot --profiles-dir profiles
-
-# Run tests
-dbt test --profiles-dir profiles
-```
-
-Alternatively, you can run everything in just a single command:
-
-```bash
-dbt build --profiles-dir profiles
-```
-
-## Querying Jaffle Shop data models on Postgres
-
-In order to query and verify the seeds, models and snapshots created in the dummy dbt project, simply follow the
-steps below.
-
-Connect to the database using your favourite SQL client on
-
 h: 127.0.0.1:5422
 u: postgres
 pwd: postgres
+```
+
+Connect to cube on: http://localhost:4000/#/
