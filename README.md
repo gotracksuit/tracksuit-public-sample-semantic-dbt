@@ -60,3 +60,57 @@ pwd: postgres
 ```
 
 Connect to cube on: http://localhost:4000/#/
+
+# Solution
+
+Create a new version of respondent_brand, which is a cross product of all respondents and brands, keep a column to mark which ones are fillers, then use this as a filter on the measures. Also pull up the weight value from respondent.
+
+```
+create or replace view respondent_brand_w as
+select concat(r.id,'-',b.id) as id, r.id as respondent_id, b.id as brand_id, exists(select * from respondent_brand rb where rb.respondent_id = r.id and rb.brand_id = b.id) as matched, r.weight
+from
+respondent r,
+brand b
+```
+
+Use the respondent_brand cube as the base, rather than the respondent cube (this is why we brought up the weight value earlier).
+
+Run this query to generate the correct results:
+
+```
+{
+    "order": {
+        "respondent.weight": "desc"
+    },
+    "filters": [
+        {
+            "member": "ethnicity.name",
+            "operator": "equals",
+            "values": [
+                "Ethnicity D",
+                "Ethnicity C"
+            ]
+        },
+        {
+            "member": "respondent.wave_date",
+            "operator": "equals",
+            "values": [
+                "'2023-08-01'"
+            ]
+        }
+    ],
+    "dimensions": [
+        "brand.name"
+    ],
+    "timeDimensions": [
+        {
+            "dimension": "respondent.wave_date"
+        }
+    ],
+    "measures": [
+        "respondent_brand.weight",
+        "respondent_brand.base_weight",
+        "respondent_brand.brand_percentage"
+    ]
+}
+```

@@ -18,11 +18,6 @@ cubes:
         sql: wave_date
         type: time
 
-    measures:
-      - name: weight
-        type: sum
-        sql: weight
-
     pre_aggregations:
       # Pre-aggregation definitions go here.
       # Learn more in the documentation: https://cube.dev/docs/caching/pre-aggregations/getting-started

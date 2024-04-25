@@ -80,3 +80,10 @@ GROUP BY
     brand_name
 ORDER BY 
     brand_name ASC;
+
+
+create or replace view respondent_brand_w as
+select concat(r.id,'-',b.id) as id, r.id as respondent_id, b.id as brand_id, exists(select * from respondent_brand rb where rb.respondent_id = r.id and rb.brand_id = b.id) as matched, r.weight
+from 
+respondent r,
+brand b 

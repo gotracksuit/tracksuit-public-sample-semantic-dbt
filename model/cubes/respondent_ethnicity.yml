@@ -13,6 +13,7 @@ cubes:
         sql: id
         type: number
         primary_key: true
+
       - name: respondent_id
         sql: respondent_id
         type: number

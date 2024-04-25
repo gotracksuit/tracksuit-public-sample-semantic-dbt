@@ -1,0 +1,35 @@
+{
+    "order": {
+        "respondent.weight": "desc"
+    },
+    "filters": [
+        {
+            "member": "ethnicity.name",
+            "operator": "equals",
+            "values": [
+                "Ethnicity D",
+                "Ethnicity C"
+            ]
+        },
+        {
+            "member": "respondent.wave_date",
+            "operator": "equals",
+            "values": [
+                "'2023-08-01'"
+            ]
+        }
+    ],
+    "dimensions": [
+        "brand.name"
+    ],
+    "timeDimensions": [
+        {
+            "dimension": "respondent.wave_date"
+        }
+    ],
+    "measures": [
+        "respondent_brand.weight",
+        "respondent_brand.base_weight",
+        "respondent_brand.brand_percentage"
+    ]
+}
