@@ -1,0 +1,61 @@
+cubes:
+  - name: vw_respondent_flat
+    sql_table: public.vw_respondent_flat
+    data_source: default
+
+    joins:
+      - name: vw_respondent_flat_brand
+        sql: "{CUBE.brands} = {vw_respondent_flat_brand.brands}"
+        relationship: one_to_many
+      - name: vw_respondent_flat_ethnicity
+        sql: "{CUBE.ethnicities} = {vw_respondent_flat_ethnicity.ethnicities}"
+        relationship: one_to_many
+      - name: vw_respondent_flat_agg
+        sql: "{CUBE.wave_date} = {vw_respondent_flat_agg.wave_date}"
+        relationship: many_to_one
+
+    dimensions:
+      - name: id
+        sql: id
+        type: number
+        primary_key: true
+
+      - name: ethnicities
+        sql: ethnicities
+        type: string
+
+      - name: brands
+        sql: brands
+        type: string
+
+      - name: agg_key
+        sql: agg_key
+        type: string
+
+      - name: wave_date
+        sql: wave_date
+        type: time
+
+      - name: base_weight
+        sql: "{vw_respondent_flat_agg.weight}"
+        type: number
+        propagate_filters_to_sub_query: true
+        sub_query: true
+
+    measures:
+      - name: weight
+        type: sum
+        sql: weight
+      - name: base_holder
+        type: sum
+        sql: "{base_weight}"
+      - name: base
+        type: number
+        sql: "ANY_VALUE(vw_respondent_flat__base_weight_holder)"
+      - name: percentage
+        type: number
+        sql: "{weight}/{base}"
+
+    pre_aggregations:
+      # Pre-aggregation definitions go here.
+      # Learn more in the documentation: https://cube.dev/docs/caching/pre-aggregations/getting-started

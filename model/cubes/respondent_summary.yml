@@ -1,0 +1,44 @@
+cubes:
+  - name: respondent_summary
+    sql_table: public.respondent_summary
+    data_source: default
+
+    joins:
+      - name: respondent_ethnicity
+        sql: "{CUBE}.id = {respondent_ethnicity}.respondent_id"
+        relationship: one_to_many
+      # - name: respondent_brand
+      #   sql: "{CUBE}.id = {respondent_brand}.respondent_id"
+      #   relationship: one_to_many
+      - name: respondent_brand
+        sql: "{CUBE}.id = {respondent_brand}.respondent_id"
+        relationship: one_to_many
+
+    dimensions:
+      - name: id
+        sql: id
+        type: number
+        primary_key: true
+
+      - name: wave_date
+        sql: wave_date
+        type: time
+
+      - name: weight_import
+        sql: "{respondent_brand.weight}"
+        type: number
+        propagate_filters_to_sub_query: true
+        sub_query: true
+
+    measures:
+      - name: base_weight
+        type: sum
+        sql: weight
+
+      - name: weight
+        sql: "{weight_import}"
+        type: sum
+
+    pre_aggregations:
+      # Pre-aggregation definitions go here.
+      # Learn more in the documentation: https://cube.dev/docs/caching/pre-aggregations/getting-started

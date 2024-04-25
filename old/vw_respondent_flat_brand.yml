@@ -1,28 +1,33 @@
 cubes:
-  - name: respondent
-    sql_table: public.respondent
+  - name: vw_respondent_flat_brand
+    sql_table: public.vw_respondent_flat_brand
     data_source: default
 
-    joins:
-      - name: respondent_ethnicity
-        sql: "{CUBE}.id = {respondent_ethnicity}.respondent_id"
-        relationship: one_to_many
+    joins: []
 
     dimensions:
       - name: id
         sql: id
-        type: number
+        type: string
         primary_key: true
+
+      - name: brand_name
+        sql: brand_name
+        type: string
+
+      - name: brands
+        sql: brands
+        type: string
 
       - name: wave_date
         sql: wave_date
         type: time
 
     measures:
-      - name: weight
-        type: sum
-        sql: weight
+      - name: count
+        type: count
 
     pre_aggregations:
       # Pre-aggregation definitions go here.
       # Learn more in the documentation: https://cube.dev/docs/caching/pre-aggregations/getting-started
+

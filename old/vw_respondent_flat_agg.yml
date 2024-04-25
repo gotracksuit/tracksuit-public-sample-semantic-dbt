@@ -1,18 +1,19 @@
 cubes:
-  - name: respondent
-    sql_table: public.respondent
+  - name: vw_respondent_flat_agg
+    sql_table: public.vw_respondent_flat_agg
     data_source: default
 
     joins:
-      - name: respondent_ethnicity
-        sql: "{CUBE}.id = {respondent_ethnicity}.respondent_id"
-        relationship: one_to_many
 
     dimensions:
-      - name: id
-        sql: id
-        type: number
+      - name: agg_key
+        sql: agg_key
+        type: string
         primary_key: true
+
+      - name: ethnicities
+        sql: ethnicities
+        type: string
 
       - name: wave_date
         sql: wave_date
@@ -20,8 +21,8 @@ cubes:
 
     measures:
       - name: weight
-        type: sum
         sql: weight
+        type: sum
 
     pre_aggregations:
       # Pre-aggregation definitions go here.
