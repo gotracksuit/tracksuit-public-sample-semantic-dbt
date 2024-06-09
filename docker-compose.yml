@@ -19,15 +19,18 @@ services:
     volumes:
       - ./db:/docker-entrypoint-initdb.d
       - ./data:/var/lib/postgresql/new-data
-  cube:
-    image: cubejs/cube:latest
-    ports:
-      - 4000:4000
-      - 15432:15432
+  dbt:
+    container_name: dbt-metricflow-2
+    build:
+      context: .
+      dockerfile: Dockerfile
     environment:
-      - CUBEJS_DEV_MODE=true
+      - DBT_PROFILES_DIR=/usr/src/dbt
     volumes:
-      - .:/cube/conf
+      - ./:/usr/src/dbt
+    working_dir: /usr/src/dbt
+    entrypoint: ["/bin/bash", "-c"]
+    command: ["/usr/src/dbt/dbt-command.sh"]
     depends_on:
       postgres:
         condition: service_healthy

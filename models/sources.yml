@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: my_source
+    schema: public
+    tables:
+      - name: brand
+      - name: ethnicity
+      - name: respondent
+      - name: respondent_brand
+      - name: respondent_ethnicity
+      - name: vw_example_respondent_summary
+      - name: respondent_brand_w

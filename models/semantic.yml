@@ -1,0 +1,61 @@
+version: 2
+
+metrics:
+  - name: total_weight
+    label: "Total Weight"
+    type: aggregation
+    calculation_method: sum
+    expression: weight
+    description: "Total weight of all respondents."
+
+  - name: average_weight
+    label: "Average Weight"
+    type: aggregation
+    calculation_method: avg
+    expression: weight
+    description: "Average weight of respondents."
+
+dimensions:
+  - name: brand_name
+    label: "Brand Name"
+    type: string
+    model: ref('respondent_brand')
+    description: "Name of the brand."
+
+  - name: ethnicity_name
+    label: "Ethnicity Name"
+    type: string
+    model: ref('respondent_ethnicity')
+    description: "Name of the ethnicity."
+
+  - name: wave_date
+    label: "Wave Date"
+    type: date
+    model: ref('respondent')
+    description: "Date of the respondent wave."
+
+entities:
+  - name: respondent
+    label: "Respondent"
+    description: "Respondent details."
+    model: ref('respondent')
+    dimensions:
+      - name: wave_date
+      - name: weight
+    metrics:
+      - name: total_weight
+      - name: average_weight
+
+  - name: brand
+    label: "Brand"
+    description: "Brand details."
+    model: ref('brand')
+    dimensions:
+      - name: name
+
+  - name: ethnicity
+    label: "Ethnicity"
+    description: "Ethnicity details."
+    model: ref('ethnicity')
+    dimensions:
+      - name: name
